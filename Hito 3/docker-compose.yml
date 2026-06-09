@@ -1,0 +1,40 @@
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql-5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: Ventas
+      MYSQL_USER: grafanar
+      MYSQL_PASSWORD: 123456
+      MYSQL_ROOT_PASSWORD: 123456
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-db:/var/lib/mysql
+    networks:
+      - grafana-net
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+    volumes:
+      - grafana-data:/var/lib/grafana
+    depends_on:
+      - mysql
+    networks:
+      - grafana-net
+
+volumes:
+  mysql-db:
+  grafana-data:
+
+networks:
+  grafana-net:
+    driver: bridge
